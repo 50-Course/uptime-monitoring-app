@@ -2,13 +2,14 @@
  * API Configuration script
  */
 
-
+// dependency
 var http = require('http');
 var https = require('https');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var fs = require('fs');
 var config = require('./config');
+var _data = require('./lib/data');
 
 
 // Initialize HTTP Server
@@ -78,20 +79,21 @@ var unifiedServer = function(req, res) {
         // route the request to the handler specified in the router
         chosenHandler(data, function(statusCode, payload) {
             // use the handler status code, else default to 200
-            statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
+            statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 
             // use the handler payload, else return an empty payload
-            payload = typeof(payload) === 'object' ? payload : {};
+            payload = typeof(payload) == 'object' ? payload : {};
 
             // convert payload to a JSON string
             var payloadStr = JSON.stringify(payload);
 
             // return the server response
+            res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
             res.end(payloadStr);
 
             // log out the response
-            console.log('Request received: ', statusCode + '\twith these payload: ', payloadStr);
+            console.log('Returned this response: ', statusCode + '\twith these payload: ', payloadStr);
         });
     });  
 };
