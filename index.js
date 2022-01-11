@@ -62,12 +62,6 @@ var unifiedServer = function(req, res) {
     req.on('end', function() {
         buffer += decoder.end();
 
-        // send the response
-        res.end('Hello World\n');
-
-        // log out the response
-        console.log('Request received these payload ', buffer);
-
         // determine the handler to handle the request and send it off,
         // if invalid, passes the request onto the notfound handler
         var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
@@ -93,9 +87,11 @@ var unifiedServer = function(req, res) {
             var payloadStr = JSON.stringify(payload);
 
             // return the server response
-            res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
             res.end(payloadStr);
+
+            // log out the response
+            console.log('Request received: ', statusCode + '\twith these payload: ', payloadStr);
         });
     });  
 };
