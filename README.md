@@ -6,6 +6,7 @@
 ## About the Project
 Uptime Monitoring Application, this is a web app built on core Node.js to monitor server/resource uptimes and downtimes.
 The application allows user to check if a resource is available on a server by entering the url, it then notifies the user via Mobile Text shoudld a previously available resource gets taken down from a server (and vice-versa).
+Project Name: goCloud
 
 ## Features
     - Upto 3 Checks for non-registered users
