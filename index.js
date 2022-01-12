@@ -50,7 +50,7 @@ var unifiedServer = function(req, res) {
     var headers = req.headers;
 
     // parse the request query as a query object
-    var queryObject = req.query;
+    var queryObject = parsedUrl.query;
 
     // parse the HTTP method
     var reqMethod = req.method.toLowerCase();
@@ -84,10 +84,10 @@ var unifiedServer = function(req, res) {
 
             // use the handler payload, else return an empty payload
             payload = typeof(payload) === 'object' ? payload : {};
-            console.log(payload); // todo: DELETE THIS!
+            // console.log(payload); // todo: DELETE THIS!
             // convert payload to a JSON string
             var payloadStr = JSON.stringify(payload);
-            console.log(payloadStr); // todo: DELETE THIS!
+            // console.log(payloadStr); // todo: DELETE THIS!
             // return the server response
             res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
