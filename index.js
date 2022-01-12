@@ -8,9 +8,10 @@ var https = require('https');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var fs = require('fs');
-var config = require('./config');
+var config = require('./lib/config');
 var _data = require('./lib/data');
-
+var handlers = require('./lib/handlers');
+var helpers = require('./lib/helpers');
 
 // Initialize HTTP Server
 var httpServer = http.createServer(function(req, res) {
@@ -47,7 +48,7 @@ var unifiedServer = function(req, res) {
     
     // parse the headers
     var headers = req.headers;
-    
+
     // parse the request query as a query object
     var queryObject = req.query;
 
@@ -62,7 +63,7 @@ var unifiedServer = function(req, res) {
     });
     req.on('end', function() {
         buffer += decoder.end();
-
+        // console.log(buffer); // todo: DELETE THIS!
         // determine the handler to handle the request and send it off,
         // if invalid, passes the request onto the notfound handler
         var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
@@ -72,21 +73,21 @@ var unifiedServer = function(req, res) {
             trimmedPath: trimmedPath,
             queryObject: queryObject,
             headers: headers,
-            reqMethod: reqMethod,
-            payload: buffer
+            method: reqMethod,
+            'payload': helpers.parseTojsonObject(buffer)
         };
-
+        // console.log(data); // todo: DELETE THIS!
         // route the request to the handler specified in the router
         chosenHandler(data, function(statusCode, payload) {
             // use the handler status code, else default to 200
-            statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
+            statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
 
             // use the handler payload, else return an empty payload
-            payload = typeof(payload) == 'object' ? payload : {};
-
+            payload = typeof(payload) === 'object' ? payload : {};
+            console.log(payload); // todo: DELETE THIS!
             // convert payload to a JSON string
             var payloadStr = JSON.stringify(payload);
-
+            console.log(payloadStr); // todo: DELETE THIS!
             // return the server response
             res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
@@ -101,41 +102,10 @@ var unifiedServer = function(req, res) {
 // ROUTING REQUESTS
 
 /**
- * Handler object for request handling 
- */
-var handlers = {};
-
-/**
- * Returns HTTP 404_NOT_FOUND status code, 
- * if path does not exists
- */
-handlers.notFound = function(data, callback) {
-    callback(404);
-};
-
-/**
- * Returns HTTP status code 200_OK, 
- * if internal server is running 
- */
-handlers.ping = function(data, callback) {
-    callback(200);
-};
-
-/**
- * Sample handler
- * 
- * Returns HTTP 406_METHOD_NOT_ACCEPTABLE status code,
- * and a json response body
- */
-handlers.sample = function(data, callback) {
-    // return a method not acceptable and a JSON response
-    callback(406, {'message': 'Sample handler'});
-};
-
-/**
  * Router object for path routing 
  */
 var router = {
     sample: handlers.sample,
-    ping: handlers.ping
+    ping: handlers.ping,
+    users: handlers.users
 };
