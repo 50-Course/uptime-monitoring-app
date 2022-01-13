@@ -30,6 +30,6 @@ Project Name: goCloud
     - [ ] In the background, application workers' should perform checks periodically and notify the users via  preffered channels
 
 ## Notes
-    - Written in Vanilla JS; _may score unstable code patterns, such as snake-cases, arrow functions in some areas, etc_
+    - Written in Vanilla JS (CommonJS); _may score unstable code patterns, such as snake-cases, arrow functions in some areas, etc_
     - Why did i pick this project for a start? the complexity should get me fairly along with Javasript and introduce me to core Node.js, while making the learning journey fun
     - Timed deadline 10 days for project completion - _this is proposed, not definite_
